@@ -316,104 +316,90 @@ void frontend::Analyzer::analysisBType(BType* root, vector<ir::Instruction*>& bu
 void frontend::Analyzer::analysisConstDef(ConstDef* root, vector<ir::Instruction*>& buffer){
     auto root_type = dynamic_cast<ConstDecl*>(root->parent)->t;   // 父节点ConstDecl的类型
     GET_CHILD_PTR(identifier, Term, 0);
-    string id = identifier->token.value;    // 变量原名"a"
-    string new_name = symbol_table.get_scoped_name(id);     // 符号表里的名字"a_g"
-    root->arr_name = new_name;  // 数组的名字
+    string id = identifier->token.value;
+    string new_name = symbol_table.get_scoped_name(id);
+    root->arr_name = new_name;
 
-    GET_CHILD_PTR(term, Term, 1);   // 获取第二个节点
-    if (term->token.type == TokenType::ASSIGN){   //第二个节点是=,普通的变量定义
-        ANALYSIS(constinitval, ConstInitVal, 2);    // 分析ConstInitVal节点
-        Operand des = Operand(new_name, root_type);     // 目标操作数
+    GET_CHILD_PTR(term, Term, 1);
+    if (term->token.type == TokenType::ASSIGN) { // 普通常量定义
+        ANALYSIS(constinitval, ConstInitVal, 2);
+        Operand des = Operand(new_name, root_type);
         auto opcode = (root_type == Type::Float || root_type == Type::FloatLiteral) ? Operator::fdef : Operator::def;
         Operand op1 = Operand(constinitval->v, constinitval->t);
-        if (root_type == Type::Float){  // 浮点常量定义
-            if (constinitval->t == Type::Int){  // 类型转换:Int->Float
+        if (root_type == Type::Float) {
+            if (constinitval->t == Type::Int) {
                 auto tmp = Operand("t" + std::to_string(tmp_cnt++), Type::Float);
                 buffer.push_back(new Instruction(op1, {}, tmp, Operator::cvt_i2f));
-                op1 = tmp;  // 更新第一操作数
-            }else if (constinitval->t == Type::IntLiteral){     // 类型转换:IntLiteral->FloatLiteral
-                // 转成 float 字符串，确保有小数点
+                op1 = tmp;
+            } else if (constinitval->t == Type::IntLiteral) {
                 std::string v = std::to_string((float)std::stoi(op1.name));
-                // 规范格式：1.000000 -> 1.0
                 v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                 if (v.back() == '.') v += "0";
                 op1.name = v;
                 op1.type = Type::FloatLiteral;
-            } else if (constinitval->t==Type::FloatLiteral){
-                // 保证有小数点后至少一位
+            } else if (constinitval->t == Type::FloatLiteral) {
                 std::string v = op1.name;
                 v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                 if (v.back() == '.') v += "0";
                 op1.name = v;
-                // 若类型本身就是FloatLiteral不用处理type
-                // 可选: 若你需要通过fdef拷贝一份临时变量
-                auto tmp=Operand("t"+std::to_string(tmp_cnt++),Type::Float);
-                buffer.push_back(new Instruction(op1,{},tmp,Operator::fdef));
+                auto tmp = Operand("t" + std::to_string(tmp_cnt++), Type::Float);
+                buffer.push_back(new Instruction(op1, {}, tmp, Operator::fdef));
                 op1 = tmp;
             }
-        }else{  // 整型常量定义
+        } else {
             assert(root_type == Type::Int);
-            if (constinitval->t == Type::Float){    // 类型转换:Float->Int
+            if (constinitval->t == Type::Float) {
                 auto tmp = Operand("t" + std::to_string(tmp_cnt++), Type::Int);
                 buffer.push_back(new Instruction(op1, {}, tmp, Operator::cvt_f2i));
                 op1 = tmp;
-            }else if(constinitval->t == Type::FloatLiteral){    // 类型转换:FloatLiteral->IntLiteral
-                // string->float->int->string
+            } else if (constinitval->t == Type::FloatLiteral) {
                 op1.name = std::to_string((int)std::stof(op1.name));
                 op1.type = Type::IntLiteral;
             }
         }
-        buffer.push_back(new Instruction(op1, Operand(), des, opcode));     // 常量定义IR
-        symbol_table.scope_stack.back().table.insert({id, {op1, {}}});      // 当前作用域符号表插入符号,因为是const常量,所以存入op1
-
-    }else if ((int)root->children.size() == 6){   //一维数组定义
-        ANALYSIS(constexp, ConstExp, 2);    // 分析ConstExp节点
-        int array_size = std::stoi(constexp->v);    // 数组长度
-        STE arr_ste;    // 临时STE
-        arr_ste.dimension.push_back(array_size);  
+        buffer.push_back(new Instruction(op1, Operand(), des, opcode));
+        symbol_table.scope_stack.back().table.insert({id, {op1, {}}});
+    }
+    else if ((int)root->children.size() == 6) { // 一维数组定义
+        ANALYSIS(constexp, ConstExp, 2);
+        int array_size = std::stoi(constexp->v);
+        STE arr_ste;
+        arr_ste.dimension.push_back(array_size);
         ir::Type curr_type = root_type;
-        bool is_float_array = false;
-        if (curr_type == ir::Type::Int){
+        if (curr_type == ir::Type::Int) {
             curr_type = ir::Type::IntPtr;
-        }else if (curr_type == ir::Type::Float){
+        } else if (curr_type == ir::Type::Float) {
             curr_type = ir::Type::FloatPtr;
-            is_float_array = true;
         }
         arr_ste.operand = ir::Operand(new_name, curr_type);
-        symbol_table.scope_stack.back().table[id] = arr_ste;    // 插入符号表
-        buffer.push_back(new Instruction({Operand(std::to_string(array_size),ir::Type::IntLiteral), {}, Operand(new_name, curr_type), Operator::alloc}));
+        symbol_table.scope_stack.back().table[id] = arr_ste;
+        buffer.push_back(new Instruction({Operand(std::to_string(array_size), ir::Type::IntLiteral), {}, Operand(new_name, curr_type), Operator::alloc}));
 
-        // 一维数组的初始化
         GET_CHILD_PTR(constinitval, ConstInitVal, 5);
         int cnt = 0;
-        if (constinitval->children.size() == 2){    // 只有{}去初始化数组
-            for (int i = 0; i<array_size; i++){
-                if (is_float_array) {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::FloatPtr), 
-                        Operand(std::to_string(i), Type::IntLiteral), 
-                        Operand("0.0", Type::FloatLiteral), 
-                        Operator::store
-                    }));
+        if (constinitval->children.size() == 2) { // 只有{}去初始化数组
+            for (int i = 0; i < array_size; i++) {
+                if (arr_ste.operand.type == Type::FloatPtr) {
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                 } else {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::IntPtr), 
-                        Operand(std::to_string(i), Type::IntLiteral), 
-                        Operand("0", Type::IntLiteral), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                 }
             }
-        }else{
-            for (int i = 1; i< (int)constinitval->children.size()-1; i+=2, cnt++){     // 遍历'{' [ ConstInitVal { ',' ConstInitVal } ] '}'
+        } else {
+            for (int i = 1; i < (int)constinitval->children.size()-1; i += 2, cnt++) {
                 ConstInitVal* child = dynamic_cast<ConstInitVal*>(constinitval->children[i]);
                 ConstExp* constexp = dynamic_cast<ConstExp*>(child->children[0]);
-                analysisConstExp(constexp, buffer); // 分析ConstExp节点
+                analysisConstExp(constexp, buffer);
                 std::string v = constexp->v;
                 ir::Type t = constexp->t;
-                if (is_float_array) {
-                    // int literal -> float literal
-                    if (t == ir::Type::IntLiteral) {
+                if (arr_ste.operand.type == Type::FloatPtr) {
+                    if (t == ir::Type::Int) {
+                        Operand int_op(v, ir::Type::Int);
+                        Operand float_tmp("t" + std::to_string(tmp_cnt++), ir::Type::Float);
+                        buffer.push_back(new Instruction(int_op, {}, float_tmp, Operator::cvt_i2f));
+                        buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), float_tmp, Operator::store}));
+                        continue;
+                    } else if (t == ir::Type::IntLiteral) {
                         v = std::to_string((float)std::stoi(v));
                         v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                         if (v.back() == '.') v += "0";
@@ -422,98 +408,68 @@ void frontend::Analyzer::analysisConstDef(ConstDef* root, vector<ir::Instruction
                         v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                         if (v.back() == '.') v += "0";
                     }
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::FloatPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand(v, t), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                 } else {
-                    // float literal -> int literal
                     if (t == ir::Type::FloatLiteral) {
                         v = std::to_string((int)std::stof(v));
                         t = ir::Type::IntLiteral;
                     }
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::IntPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand(v, t), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                 }
             }
-            // 补零
-            for (; cnt < array_size; cnt++){
-                if (is_float_array) {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::FloatPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand("0.0", Type::FloatLiteral), 
-                        Operator::store
-                    }));
+            for (; cnt < array_size; cnt++) {
+                if (arr_ste.operand.type == Type::FloatPtr) {
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                 } else {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::IntPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand("0", Type::IntLiteral), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                 }
             }
         }
-    // ConstDef -> Ident '[' ConstExp ']' '[' ConstExp ']' '=' ConstInitVal
-    }else if ((int)root->children.size() == 9){  // 二维数组定义
-        ANALYSIS(constexp1, ConstExp, 2);    // 分析ConstExp节点
-        ANALYSIS(constexp2, ConstExp, 5);    // 分析ConstExp节点
+    }
+    else if ((int)root->children.size() == 9) { // 二维数组定义
+        ANALYSIS(constexp1, ConstExp, 2);
+        ANALYSIS(constexp2, ConstExp, 5);
         int dim1 = std::stoi(constexp1->v);
         int dim2 = std::stoi(constexp2->v);
-        int array_size = dim1 * dim2;    // 数组长度
-        STE arr_ste;    // 临时STE
-        arr_ste.dimension.push_back(dim1);   // 第一维
-        arr_ste.dimension.push_back(dim2);   // 第二维
+        int array_size = dim1 * dim2;
+        STE arr_ste;
+        arr_ste.dimension.push_back(dim1);
+        arr_ste.dimension.push_back(dim2);
         ir::Type curr_type = root_type;
-        bool is_float_array = false;
-        if (curr_type == ir::Type::Int){
+        if (curr_type == ir::Type::Int) {
             curr_type = ir::Type::IntPtr;
-        }else if (curr_type == ir::Type::Float){
+        } else if (curr_type == ir::Type::Float) {
             curr_type = ir::Type::FloatPtr;
-            is_float_array = true;
         }
         arr_ste.operand = ir::Operand(new_name, curr_type);
-        symbol_table.scope_stack.back().table[id] = arr_ste;    // 插入符号表
-        buffer.push_back(new Instruction({Operand(std::to_string(array_size),ir::Type::IntLiteral), {}, Operand(new_name, curr_type), Operator::alloc}));
-        
-        // 二维数组的初始化
+        symbol_table.scope_stack.back().table[id] = arr_ste;
+        buffer.push_back(new Instruction({Operand(std::to_string(array_size), ir::Type::IntLiteral), {}, Operand(new_name, curr_type), Operator::alloc}));
+
         GET_CHILD_PTR(constinitval, ConstInitVal, 8);
         int cnt = 0;
-        if (constinitval->children.size() == 2){    // 只有{}去初始化数组
-            for (int i = 0; i<array_size; i++){
-                if (is_float_array) {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::FloatPtr), 
-                        Operand(std::to_string(i), Type::IntLiteral), 
-                        Operand("0.0", Type::FloatLiteral), 
-                        Operator::store
-                    }));
+        if (constinitval->children.size() == 2) { // 只有{}去初始化数组
+            for (int i = 0; i < array_size; i++) {
+                if (arr_ste.operand.type == Type::FloatPtr) {
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                 } else {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::IntPtr), 
-                        Operand(std::to_string(i), Type::IntLiteral), 
-                        Operand("0", Type::IntLiteral), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                 }
             }
-        }else{
-            for (int i = 1; i< (int)constinitval->children.size()-1; i+=2, cnt++){     // 遍历'{' [ ConstInitVal { ',' ConstInitVal } ] '}'
+        } else {
+            for (int i = 1; i < (int)constinitval->children.size()-1; i += 2, cnt++) {
                 ConstInitVal* child = dynamic_cast<ConstInitVal*>(constinitval->children[i]);
                 ConstExp* constexp = dynamic_cast<ConstExp*>(child->children[0]);
-                analysisConstExp(constexp, buffer); // 分析ConstExp节点
+                analysisConstExp(constexp, buffer);
                 std::string v = constexp->v;
                 ir::Type t = constexp->t;
-                if (is_float_array) {
-                    // int literal -> float literal
-                    if (t == ir::Type::IntLiteral) {
+                if (arr_ste.operand.type == Type::FloatPtr) {
+                    if (t == ir::Type::Int) {
+                        Operand int_op(v, ir::Type::Int);
+                        Operand float_tmp("t" + std::to_string(tmp_cnt++), ir::Type::Float);
+                        buffer.push_back(new Instruction(int_op, {}, float_tmp, Operator::cvt_i2f));
+                        buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), float_tmp, Operator::store}));
+                        continue;
+                    } else if (t == ir::Type::IntLiteral) {
                         v = std::to_string((float)std::stoi(v));
                         v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                         if (v.back() == '.') v += "0";
@@ -522,42 +478,20 @@ void frontend::Analyzer::analysisConstDef(ConstDef* root, vector<ir::Instruction
                         v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                         if (v.back() == '.') v += "0";
                     }
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::FloatPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand(v, t), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                 } else {
-                    // float literal -> int literal
                     if (t == ir::Type::FloatLiteral) {
                         v = std::to_string((int)std::stof(v));
                         t = ir::Type::IntLiteral;
                     }
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::IntPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand(v, t), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                 }
             }
-            // 补零
-            for (; cnt < array_size; cnt++){
-                if (is_float_array) {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::FloatPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand("0.0", Type::FloatLiteral), 
-                        Operator::store
-                    }));
+            for (; cnt < array_size; cnt++) {
+                if (arr_ste.operand.type == Type::FloatPtr) {
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                 } else {
-                    buffer.push_back(new Instruction({
-                        Operand(new_name, Type::IntPtr), 
-                        Operand(std::to_string(cnt), Type::IntLiteral), 
-                        Operand("0", Type::IntLiteral), 
-                        Operator::store
-                    }));
+                    buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                 }
             }
         }
@@ -619,9 +553,7 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                     buffer.push_back(new Instruction(op1, {}, tmp, Operator::cvt_i2f));
                     op1 = tmp;
                 } else if (initval->t == Type::IntLiteral) {
-                    // 强制转为 float 字符串，格式如 1.0
                     std::string v = std::to_string((float)std::stoi(op1.name));
-                    // 规范格式：去掉多余的0，只留一位小数
                     v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                     if (v.back() == '.') v += "0";
                     op1.name = v;
@@ -640,7 +572,6 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
             }
             buffer.push_back(new Instruction(op1, Operand(), des, opcode));
             symbol_table.scope_stack.back().table.insert({id, {des, {}}});
-
         } else if (root->children.back()->type == NodeType::INITVAL) { // 数组,有赋值
             if ((int)root->children.size() == 6) { // 一维数组定义
                 ANALYSIS(constexp, ConstExp, 2);
@@ -648,12 +579,10 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                 STE arr_ste;
                 arr_ste.dimension.push_back(array_size);
                 ir::Type curr_type = root_type;
-                bool is_float_array = false;
                 if (curr_type == ir::Type::Int) {
                     curr_type = ir::Type::IntPtr;
                 } else if (curr_type == ir::Type::Float) {
                     curr_type = ir::Type::FloatPtr;
-                    is_float_array = true;
                 }
                 arr_ste.operand = ir::Operand(new_name, curr_type);
                 symbol_table.scope_stack.back().table[id] = arr_ste;
@@ -663,10 +592,10 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                 int cnt = 0;
                 if (initval->children.size() == 2) {
                     for (int i = 0; i < array_size; i++) {
-                        if (is_float_array) {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
+                        if (arr_ste.operand.type == Type::FloatPtr) {
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                         } else {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                         }
                     }
                 } else {
@@ -676,8 +605,14 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                         analysisExp(exp, buffer);
                         std::string v = exp->v;
                         ir::Type t = exp->t;
-                        if (is_float_array) {
-                            if (t == ir::Type::IntLiteral) {
+                        if (arr_ste.operand.type == Type::FloatPtr) {
+                            if (t == ir::Type::Int) {
+                                Operand int_op(v, ir::Type::Int);
+                                Operand float_tmp("t" + std::to_string(tmp_cnt++), ir::Type::Float);
+                                buffer.push_back(new Instruction(int_op, {}, float_tmp, Operator::cvt_i2f));
+                                buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), float_tmp, Operator::store}));
+                                continue;
+                            } else if (t == ir::Type::IntLiteral) {
                                 v = std::to_string((float)std::stoi(v));
                                 v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                                 if (v.back() == '.') v += "0";
@@ -686,20 +621,20 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                                 v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                                 if (v.back() == '.') v += "0";
                             }
-                            buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                         } else {
                             if (t == ir::Type::FloatLiteral) {
                                 v = std::to_string((int)std::stof(v));
                                 t = ir::Type::IntLiteral;
                             }
-                            buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                         }
                     }
                     for (; cnt < array_size; cnt++) {
-                        if (is_float_array) {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
+                        if (arr_ste.operand.type == Type::FloatPtr) {
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                         } else {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                         }
                     }
                 }
@@ -713,12 +648,10 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                 arr_ste.dimension.push_back(dim1);
                 arr_ste.dimension.push_back(dim2);
                 ir::Type curr_type = root_type;
-                bool is_float_array = false;
                 if (curr_type == ir::Type::Int) {
                     curr_type = ir::Type::IntPtr;
                 } else if (curr_type == ir::Type::Float) {
                     curr_type = ir::Type::FloatPtr;
-                    is_float_array = true;
                 }
                 arr_ste.operand = ir::Operand(new_name, curr_type);
                 symbol_table.scope_stack.back().table[id] = arr_ste;
@@ -728,10 +661,10 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                 int cnt = 0;
                 if (initval->children.size() == 2) {
                     for (int i = 0; i < array_size; i++) {
-                        if (is_float_array) {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
+                        if (arr_ste.operand.type == Type::FloatPtr) {
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                         } else {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                         }
                     }
                 } else {
@@ -741,8 +674,14 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                         analysisExp(exp, buffer);
                         std::string v = exp->v;
                         ir::Type t = exp->t;
-                        if (is_float_array) {
-                            if (t == ir::Type::IntLiteral) {
+                        if (arr_ste.operand.type == Type::FloatPtr) {
+                            if (t == ir::Type::Int) {
+                                Operand int_op(v, ir::Type::Int);
+                                Operand float_tmp("t" + std::to_string(tmp_cnt++), ir::Type::Float);
+                                buffer.push_back(new Instruction(int_op, {}, float_tmp, Operator::cvt_i2f));
+                                buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), float_tmp, Operator::store}));
+                                continue;
+                            } else if (t == ir::Type::IntLiteral) {
                                 v = std::to_string((float)std::stoi(v));
                                 v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                                 if (v.back() == '.') v += "0";
@@ -751,20 +690,20 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                                 v.erase(v.find_last_not_of('0') + 1, std::string::npos);
                                 if (v.back() == '.') v += "0";
                             }
-                            buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                         } else {
                             if (t == ir::Type::FloatLiteral) {
                                 v = std::to_string((int)std::stof(v));
                                 t = ir::Type::IntLiteral;
                             }
-                            buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand(v, t), Operator::store}));
                         }
                     }
                     for (; cnt < array_size; cnt++) {
-                        if (is_float_array) {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
+                        if (arr_ste.operand.type == Type::FloatPtr) {
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                         } else {
-                            buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(cnt), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
+                            buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(cnt), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                         }
                     }
                 }
@@ -776,22 +715,20 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                 STE arr_ste;
                 arr_ste.dimension.push_back(array_size);
                 ir::Type curr_type = root_type;
-                bool is_float_array = false;
                 if (curr_type == ir::Type::Int) {
                     curr_type = ir::Type::IntPtr;
                 } else if (curr_type == ir::Type::Float) {
                     curr_type = ir::Type::FloatPtr;
-                    is_float_array = true;
                 }
                 arr_ste.operand = ir::Operand(new_name, curr_type);
                 symbol_table.scope_stack.back().table[id] = arr_ste;
                 buffer.push_back(new Instruction({Operand(std::to_string(array_size), ir::Type::IntLiteral), {}, Operand(new_name, curr_type), Operator::alloc}));
 
                 for (int i = 0; i < array_size; i++) {
-                    if (is_float_array) {
-                        buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
+                    if (arr_ste.operand.type == Type::FloatPtr) {
+                        buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                     } else {
-                        buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
+                        buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                     }
                 }
             } else if ((int)root->children.size() == 7) {
@@ -804,29 +741,26 @@ void frontend::Analyzer::analysisVarDef(VarDef* root, vector<ir::Instruction*>& 
                 arr_ste.dimension.push_back(dim1);
                 arr_ste.dimension.push_back(dim2);
                 ir::Type curr_type = root_type;
-                bool is_float_array = false;
                 if (curr_type == ir::Type::Int) {
                     curr_type = ir::Type::IntPtr;
                 } else if (curr_type == ir::Type::Float) {
                     curr_type = ir::Type::FloatPtr;
-                    is_float_array = true;
                 }
                 arr_ste.operand = ir::Operand(new_name, curr_type);
                 symbol_table.scope_stack.back().table[id] = arr_ste;
                 buffer.push_back(new Instruction({Operand(std::to_string(array_size), ir::Type::IntLiteral), {}, Operand(new_name, curr_type), Operator::alloc}));
 
                 for (int i = 0; i < array_size; i++) {
-                    if (is_float_array) {
-                        buffer.push_back(new Instruction({Operand(new_name, Type::FloatPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
+                    if (arr_ste.operand.type == Type::FloatPtr) {
+                        buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0.0", Type::FloatLiteral), Operator::store}));
                     } else {
-                        buffer.push_back(new Instruction({Operand(new_name, Type::IntPtr), Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
+                        buffer.push_back(new Instruction({arr_ste.operand, Operand(std::to_string(i), Type::IntLiteral), Operand("0", Type::IntLiteral), Operator::store}));
                     }
                 }
             }
         }
     }
 }
-
 // InitVal -> Exp | '{' [ InitVal { ',' InitVal } ] '}'
 void frontend::Analyzer::analysisInitVal(InitVal* root, vector<ir::Instruction*>& buffer){
 
@@ -1148,7 +1082,8 @@ void frontend::Analyzer::analysisLVal(LVal* root, vector<ir::Instruction*>& buff
         // Ident '[' Exp ']'
         if ((int)root->children.size() == 4){     // 一维数组
             ANALYSIS(exp, Exp, 2);
-            Type t = (root->t == Type::IntPtr) ? Type::Int : Type::Float;
+            // 关键修正：元素类型直接取数组指针类型
+            Type t = (arr.operand.type == Type::IntPtr) ? Type::Int : Type::Float;
             root->t = t;
             Operand index = Operand(exp->v, exp->t);
 
@@ -1190,7 +1125,8 @@ void frontend::Analyzer::analysisLVal(LVal* root, vector<ir::Instruction*>& buff
         }else{      // 二维数组
             ANALYSIS(exp1, Exp, 2);
             ANALYSIS(exp2, Exp, 5);
-            Type t = (root->t == Type::IntPtr) ? Type::Int : Type::Float;
+            // 关键修正：元素类型直接取数组指针类型
+            Type t = (arr.operand.type == Type::IntPtr) ? Type::Int : Type::Float;
             root->t = t;
             if (exp1->is_computable && exp2->is_computable){    // 可以直接计算下标
                 std::string i = std::to_string(std::stoi(exp1->v) * dimension[1] + std::stoi(exp2->v));
