@@ -1,0 +1,818 @@
+	.option nopic
+	.data
+	.globl	a0_0
+	.type	a0_0, @object
+	.size	a0_0, 4
+	.align	4
+a0_0:
+	.word	0
+	.globl	a1_0
+	.type	a1_0, @object
+	.size	a1_0, 4
+	.align	4
+a1_0:
+	.word	0
+	.globl	a2_0
+	.type	a2_0, @object
+	.size	a2_0, 4
+	.align	4
+a2_0:
+	.word	0
+	.globl	a3_0
+	.type	a3_0, @object
+	.size	a3_0, 4
+	.align	4
+a3_0:
+	.word	0
+	.globl	a4_0
+	.type	a4_0, @object
+	.size	a4_0, 4
+	.align	4
+a4_0:
+	.word	0
+	.globl	a5_0
+	.type	a5_0, @object
+	.size	a5_0, 4
+	.align	4
+a5_0:
+	.word	0
+	.globl	a6_0
+	.type	a6_0, @object
+	.size	a6_0, 4
+	.align	4
+a6_0:
+	.word	0
+	.globl	a7_0
+	.type	a7_0, @object
+	.size	a7_0, 4
+	.align	4
+a7_0:
+	.word	0
+	.globl	a8_0
+	.type	a8_0, @object
+	.size	a8_0, 4
+	.align	4
+a8_0:
+	.word	0
+	.globl	a9_0
+	.type	a9_0, @object
+	.size	a9_0, 4
+	.align	4
+a9_0:
+	.word	0
+	.globl	a10_0
+	.type	a10_0, @object
+	.size	a10_0, 4
+	.align	4
+a10_0:
+	.word	0
+	.globl	a11_0
+	.type	a11_0, @object
+	.size	a11_0, 4
+	.align	4
+a11_0:
+	.word	0
+	.globl	a12_0
+	.type	a12_0, @object
+	.size	a12_0, 4
+	.align	4
+a12_0:
+	.word	0
+	.globl	a13_0
+	.type	a13_0, @object
+	.size	a13_0, 4
+	.align	4
+a13_0:
+	.word	0
+	.globl	a14_0
+	.type	a14_0, @object
+	.size	a14_0, 4
+	.align	4
+a14_0:
+	.word	0
+	.globl	a15_0
+	.type	a15_0, @object
+	.size	a15_0, 4
+	.align	4
+a15_0:
+	.word	0
+	.globl	a16_0
+	.type	a16_0, @object
+	.size	a16_0, 4
+	.align	4
+a16_0:
+	.word	0
+	.globl	a17_0
+	.type	a17_0, @object
+	.size	a17_0, 4
+	.align	4
+a17_0:
+	.word	0
+	.globl	a18_0
+	.type	a18_0, @object
+	.size	a18_0, 4
+	.align	4
+a18_0:
+	.word	0
+	.globl	a19_0
+	.type	a19_0, @object
+	.size	a19_0, 4
+	.align	4
+a19_0:
+	.word	0
+	.globl	a20_0
+	.type	a20_0, @object
+	.size	a20_0, 4
+	.align	4
+a20_0:
+	.word	0
+	.globl	a21_0
+	.type	a21_0, @object
+	.size	a21_0, 4
+	.align	4
+a21_0:
+	.word	0
+	.globl	a22_0
+	.type	a22_0, @object
+	.size	a22_0, 4
+	.align	4
+a22_0:
+	.word	0
+	.globl	a23_0
+	.type	a23_0, @object
+	.size	a23_0, 4
+	.align	4
+a23_0:
+	.word	0
+	.globl	a24_0
+	.type	a24_0, @object
+	.size	a24_0, 4
+	.align	4
+a24_0:
+	.word	0
+	.globl	a25_0
+	.type	a25_0, @object
+	.size	a25_0, 4
+	.align	4
+a25_0:
+	.word	0
+	.globl	a26_0
+	.type	a26_0, @object
+	.size	a26_0, 4
+	.align	4
+a26_0:
+	.word	0
+	.globl	a27_0
+	.type	a27_0, @object
+	.size	a27_0, 4
+	.align	4
+a27_0:
+	.word	0
+	.globl	a28_0
+	.type	a28_0, @object
+	.size	a28_0, 4
+	.align	4
+a28_0:
+	.word	0
+	.globl	a29_0
+	.type	a29_0, @object
+	.size	a29_0, 4
+	.align	4
+a29_0:
+	.word	0
+	.globl	a30_0
+	.type	a30_0, @object
+	.size	a30_0, 4
+	.align	4
+a30_0:
+	.word	0
+	.globl	a31_0
+	.type	a31_0, @object
+	.size	a31_0, 4
+	.align	4
+a31_0:
+	.word	0
+	.globl	a32_0
+	.type	a32_0, @object
+	.size	a32_0, 4
+	.align	4
+a32_0:
+	.word	0
+	.globl	a33_0
+	.type	a33_0, @object
+	.size	a33_0, 4
+	.align	4
+a33_0:
+	.word	0
+	.globl	a34_0
+	.type	a34_0, @object
+	.size	a34_0, 4
+	.align	4
+a34_0:
+	.word	0
+	.globl	a35_0
+	.type	a35_0, @object
+	.size	a35_0, 4
+	.align	4
+a35_0:
+	.word	0
+	.globl	a36_0
+	.type	a36_0, @object
+	.size	a36_0, 4
+	.align	4
+a36_0:
+	.word	0
+	.globl	a37_0
+	.type	a37_0, @object
+	.size	a37_0, 4
+	.align	4
+a37_0:
+	.word	0
+	.globl	a38_0
+	.type	a38_0, @object
+	.size	a38_0, 4
+	.align	4
+a38_0:
+	.word	0
+	.globl	a39_0
+	.type	a39_0, @object
+	.size	a39_0, 4
+	.align	4
+a39_0:
+	.word	0
+	.text
+	.globl	testParam8
+	.type	testParam8, @function
+testParam8:
+	addi	sp,sp,-64
+	sw	ra,60(sp)
+	sw	a0,0(sp)
+	sw	a1,4(sp)
+	sw	a2,8(sp)
+	sw	a3,12(sp)
+	sw	a4,16(sp)
+	sw	a5,20(sp)
+	sw	a6,24(sp)
+	sw	a7,28(sp)
+	lw	t0,0(sp)
+	lw	t1,4(sp)
+	add	t2,t0,t1
+	sw	t2,32(sp)
+	lw	t0,32(sp)
+	lw	t1,8(sp)
+	add	t2,t0,t1
+	sw	t2,36(sp)
+	lw	t0,36(sp)
+	lw	t1,12(sp)
+	add	t2,t0,t1
+	sw	t2,40(sp)
+	lw	t0,40(sp)
+	lw	t1,16(sp)
+	add	t2,t0,t1
+	sw	t2,44(sp)
+	lw	t0,44(sp)
+	lw	t1,20(sp)
+	add	t2,t0,t1
+	sw	t2,48(sp)
+	lw	t0,48(sp)
+	lw	t1,24(sp)
+	add	t2,t0,t1
+	sw	t2,52(sp)
+	lw	t0,52(sp)
+	lw	t1,28(sp)
+	add	t2,t0,t1
+	sw	t2,56(sp)
+	lw	t0,56(sp)
+	mv	a0,t0
+	lw	ra,60(sp)
+	addi	sp,sp,64
+	jr	ra
+	.size	testParam8, .-testParam8
+	.globl	testParam16
+	.type	testParam16, @function
+testParam16:
+	addi	sp,sp,-128
+	sw	ra,124(sp)
+	sw	a0,0(sp)
+	sw	a1,4(sp)
+	sw	a2,8(sp)
+	sw	a3,12(sp)
+	sw	a4,16(sp)
+	sw	a5,20(sp)
+	sw	a6,24(sp)
+	sw	a7,28(sp)
+	sw	zero,32(sp)
+	sw	zero,36(sp)
+	sw	zero,40(sp)
+	sw	zero,44(sp)
+	sw	zero,48(sp)
+	sw	zero,52(sp)
+	sw	zero,56(sp)
+	sw	zero,60(sp)
+	lw	t0,0(sp)
+	lw	t1,4(sp)
+	add	t2,t0,t1
+	sw	t2,64(sp)
+	lw	t0,64(sp)
+	lw	t1,8(sp)
+	add	t2,t0,t1
+	sw	t2,68(sp)
+	lw	t0,68(sp)
+	lw	t1,12(sp)
+	sub	t2,t0,t1
+	sw	t2,72(sp)
+	lw	t0,72(sp)
+	lw	t1,16(sp)
+	sub	t2,t0,t1
+	sw	t2,76(sp)
+	lw	t0,76(sp)
+	lw	t1,20(sp)
+	sub	t2,t0,t1
+	sw	t2,80(sp)
+	lw	t0,80(sp)
+	lw	t1,24(sp)
+	sub	t2,t0,t1
+	sw	t2,84(sp)
+	lw	t0,84(sp)
+	lw	t1,28(sp)
+	sub	t2,t0,t1
+	sw	t2,88(sp)
+	lw	t0,88(sp)
+	lw	t1,32(sp)
+	add	t2,t0,t1
+	sw	t2,92(sp)
+	lw	t0,92(sp)
+	lw	t1,36(sp)
+	add	t2,t0,t1
+	sw	t2,96(sp)
+	lw	t0,96(sp)
+	lw	t1,40(sp)
+	add	t2,t0,t1
+	sw	t2,100(sp)
+	lw	t0,100(sp)
+	lw	t1,44(sp)
+	add	t2,t0,t1
+	sw	t2,104(sp)
+	lw	t0,104(sp)
+	lw	t1,48(sp)
+	add	t2,t0,t1
+	sw	t2,108(sp)
+	lw	t0,108(sp)
+	lw	t1,52(sp)
+	add	t2,t0,t1
+	sw	t2,112(sp)
+	lw	t0,112(sp)
+	lw	t1,56(sp)
+	add	t2,t0,t1
+	sw	t2,116(sp)
+	lw	t0,116(sp)
+	lw	t1,60(sp)
+	add	t2,t0,t1
+	sw	t2,120(sp)
+	lw	t0,120(sp)
+	mv	a0,t0
+	lw	ra,124(sp)
+	addi	sp,sp,128
+	jr	ra
+	.size	testParam16, .-testParam16
+	.globl	testParam32
+	.type	testParam32, @function
+testParam32:
+	addi	sp,sp,-256
+	sw	ra,252(sp)
+	sw	a0,0(sp)
+	sw	a1,4(sp)
+	sw	a2,8(sp)
+	sw	a3,12(sp)
+	sw	a4,16(sp)
+	sw	a5,20(sp)
+	sw	a6,24(sp)
+	sw	a7,28(sp)
+	sw	zero,32(sp)
+	sw	zero,36(sp)
+	sw	zero,40(sp)
+	sw	zero,44(sp)
+	sw	zero,48(sp)
+	sw	zero,52(sp)
+	sw	zero,56(sp)
+	sw	zero,60(sp)
+	sw	zero,64(sp)
+	sw	zero,68(sp)
+	sw	zero,72(sp)
+	sw	zero,76(sp)
+	sw	zero,80(sp)
+	sw	zero,84(sp)
+	sw	zero,88(sp)
+	sw	zero,92(sp)
+	sw	zero,96(sp)
+	sw	zero,100(sp)
+	sw	zero,104(sp)
+	sw	zero,108(sp)
+	sw	zero,112(sp)
+	sw	zero,116(sp)
+	sw	zero,120(sp)
+	sw	zero,124(sp)
+	lw	t0,0(sp)
+	lw	t1,4(sp)
+	add	t2,t0,t1
+	sw	t2,128(sp)
+	lw	t0,128(sp)
+	lw	t1,8(sp)
+	add	t2,t0,t1
+	sw	t2,132(sp)
+	lw	t0,132(sp)
+	lw	t1,12(sp)
+	add	t2,t0,t1
+	sw	t2,136(sp)
+	lw	t0,136(sp)
+	lw	t1,16(sp)
+	add	t2,t0,t1
+	sw	t2,140(sp)
+	lw	t0,140(sp)
+	lw	t1,20(sp)
+	add	t2,t0,t1
+	sw	t2,144(sp)
+	lw	t0,144(sp)
+	lw	t1,24(sp)
+	add	t2,t0,t1
+	sw	t2,148(sp)
+	lw	t0,148(sp)
+	lw	t1,28(sp)
+	add	t2,t0,t1
+	sw	t2,152(sp)
+	lw	t0,152(sp)
+	lw	t1,32(sp)
+	add	t2,t0,t1
+	sw	t2,156(sp)
+	lw	t0,156(sp)
+	lw	t1,36(sp)
+	add	t2,t0,t1
+	sw	t2,160(sp)
+	lw	t0,160(sp)
+	lw	t1,40(sp)
+	add	t2,t0,t1
+	sw	t2,164(sp)
+	lw	t0,164(sp)
+	lw	t1,44(sp)
+	add	t2,t0,t1
+	sw	t2,168(sp)
+	lw	t0,168(sp)
+	lw	t1,48(sp)
+	add	t2,t0,t1
+	sw	t2,172(sp)
+	lw	t0,172(sp)
+	lw	t1,52(sp)
+	add	t2,t0,t1
+	sw	t2,176(sp)
+	lw	t0,176(sp)
+	lw	t1,56(sp)
+	add	t2,t0,t1
+	sw	t2,180(sp)
+	lw	t0,180(sp)
+	lw	t1,60(sp)
+	add	t2,t0,t1
+	sw	t2,184(sp)
+	lw	t0,184(sp)
+	lw	t1,64(sp)
+	add	t2,t0,t1
+	sw	t2,188(sp)
+	lw	t0,188(sp)
+	lw	t1,68(sp)
+	add	t2,t0,t1
+	sw	t2,192(sp)
+	lw	t0,192(sp)
+	lw	t1,72(sp)
+	sub	t2,t0,t1
+	sw	t2,196(sp)
+	lw	t0,196(sp)
+	lw	t1,76(sp)
+	sub	t2,t0,t1
+	sw	t2,200(sp)
+	lw	t0,200(sp)
+	lw	t1,80(sp)
+	sub	t2,t0,t1
+	sw	t2,204(sp)
+	lw	t0,204(sp)
+	lw	t1,84(sp)
+	sub	t2,t0,t1
+	sw	t2,208(sp)
+	lw	t0,208(sp)
+	lw	t1,88(sp)
+	sub	t2,t0,t1
+	sw	t2,212(sp)
+	lw	t0,212(sp)
+	lw	t1,92(sp)
+	add	t2,t0,t1
+	sw	t2,216(sp)
+	lw	t0,216(sp)
+	lw	t1,96(sp)
+	add	t2,t0,t1
+	sw	t2,220(sp)
+	lw	t0,220(sp)
+	lw	t1,100(sp)
+	add	t2,t0,t1
+	sw	t2,224(sp)
+	lw	t0,224(sp)
+	lw	t1,104(sp)
+	add	t2,t0,t1
+	sw	t2,228(sp)
+	lw	t0,228(sp)
+	lw	t1,108(sp)
+	add	t2,t0,t1
+	sw	t2,232(sp)
+	lw	t0,232(sp)
+	lw	t1,112(sp)
+	add	t2,t0,t1
+	sw	t2,236(sp)
+	lw	t0,236(sp)
+	lw	t1,116(sp)
+	add	t2,t0,t1
+	sw	t2,240(sp)
+	lw	t0,240(sp)
+	lw	t1,120(sp)
+	add	t2,t0,t1
+	sw	t2,244(sp)
+	lw	t0,244(sp)
+	lw	t1,124(sp)
+	add	t2,t0,t1
+	sw	t2,248(sp)
+	lw	t0,248(sp)
+	mv	a0,t0
+	lw	ra,252(sp)
+	addi	sp,sp,256
+	jr	ra
+	.size	testParam32, .-testParam32
+	.globl	main
+	.type	main, @function
+main:
+	addi	sp,sp,-28
+	sw	ra,24(sp)
+	li	t2,0
+	la	t3,a0_0
+	sw	t2,0(t3)
+	li	t2,1
+	la	t3,a1_0
+	sw	t2,0(t3)
+	li	t2,2
+	la	t3,a2_0
+	sw	t2,0(t3)
+	li	t2,3
+	la	t3,a3_0
+	sw	t2,0(t3)
+	li	t2,4
+	la	t3,a4_0
+	sw	t2,0(t3)
+	li	t2,5
+	la	t3,a5_0
+	sw	t2,0(t3)
+	li	t2,6
+	la	t3,a6_0
+	sw	t2,0(t3)
+	li	t2,7
+	la	t3,a7_0
+	sw	t2,0(t3)
+	li	t2,8
+	la	t3,a8_0
+	sw	t2,0(t3)
+	li	t2,9
+	la	t3,a9_0
+	sw	t2,0(t3)
+	li	t2,0
+	la	t3,a10_0
+	sw	t2,0(t3)
+	li	t2,1
+	la	t3,a11_0
+	sw	t2,0(t3)
+	li	t2,2
+	la	t3,a12_0
+	sw	t2,0(t3)
+	li	t2,3
+	la	t3,a13_0
+	sw	t2,0(t3)
+	li	t2,4
+	la	t3,a14_0
+	sw	t2,0(t3)
+	li	t2,5
+	la	t3,a15_0
+	sw	t2,0(t3)
+	li	t2,6
+	la	t3,a16_0
+	sw	t2,0(t3)
+	li	t2,7
+	la	t3,a17_0
+	sw	t2,0(t3)
+	li	t2,8
+	la	t3,a18_0
+	sw	t2,0(t3)
+	li	t2,9
+	la	t3,a19_0
+	sw	t2,0(t3)
+	li	t2,0
+	la	t3,a20_0
+	sw	t2,0(t3)
+	li	t2,1
+	la	t3,a21_0
+	sw	t2,0(t3)
+	li	t2,2
+	la	t3,a22_0
+	sw	t2,0(t3)
+	li	t2,3
+	la	t3,a23_0
+	sw	t2,0(t3)
+	li	t2,4
+	la	t3,a24_0
+	sw	t2,0(t3)
+	li	t2,5
+	la	t3,a25_0
+	sw	t2,0(t3)
+	li	t2,6
+	la	t3,a26_0
+	sw	t2,0(t3)
+	li	t2,7
+	la	t3,a27_0
+	sw	t2,0(t3)
+	li	t2,8
+	la	t3,a28_0
+	sw	t2,0(t3)
+	li	t2,9
+	la	t3,a29_0
+	sw	t2,0(t3)
+	li	t2,0
+	la	t3,a30_0
+	sw	t2,0(t3)
+	li	t2,1
+	la	t3,a31_0
+	sw	t2,0(t3)
+	li	t2,4
+	la	t3,a32_0
+	sw	t2,0(t3)
+	li	t2,5
+	la	t3,a33_0
+	sw	t2,0(t3)
+	li	t2,6
+	la	t3,a34_0
+	sw	t2,0(t3)
+	li	t2,7
+	la	t3,a35_0
+	sw	t2,0(t3)
+	li	t2,8
+	la	t3,a36_0
+	sw	t2,0(t3)
+	li	t2,9
+	la	t3,a37_0
+	sw	t2,0(t3)
+	li	t2,0
+	la	t3,a38_0
+	sw	t2,0(t3)
+	li	t2,1
+	la	t3,a39_0
+	sw	t2,0(t3)
+	la	a0,a0_0
+	lw	a0,0(a0)
+	la	a1,a1_0
+	lw	a1,0(a1)
+	la	a2,a2_0
+	lw	a2,0(a2)
+	la	a3,a3_0
+	lw	a3,0(a3)
+	la	a4,a4_0
+	lw	a4,0(a4)
+	la	a5,a5_0
+	lw	a5,0(a5)
+	la	a6,a6_0
+	lw	a6,0(a6)
+	la	a7,a7_0
+	lw	a7,0(a7)
+	call	testParam8
+	sw	a0,0(sp)
+	lw	t0,0(sp)
+	mv	t2,t0
+	la	t3,a0_0
+	sw	t2,0(t3)
+	la	a0,a0_0
+	lw	a0,0(a0)
+	call	putint
+	sw	a0,4(sp)
+	la	a0,a32_0
+	lw	a0,0(a0)
+	la	a1,a33_0
+	lw	a1,0(a1)
+	la	a2,a34_0
+	lw	a2,0(a2)
+	la	a3,a35_0
+	lw	a3,0(a3)
+	la	a4,a36_0
+	lw	a4,0(a4)
+	la	a5,a37_0
+	lw	a5,0(a5)
+	la	a6,a38_0
+	lw	a6,0(a6)
+	la	a7,a39_0
+	lw	a7,0(a7)
+	la	zero,a8_0
+	lw	zero,0(zero)
+	la	zero,a9_0
+	lw	zero,0(zero)
+	la	zero,a10_0
+	lw	zero,0(zero)
+	la	zero,a11_0
+	lw	zero,0(zero)
+	la	zero,a12_0
+	lw	zero,0(zero)
+	la	zero,a13_0
+	lw	zero,0(zero)
+	la	zero,a14_0
+	lw	zero,0(zero)
+	la	zero,a15_0
+	lw	zero,0(zero)
+	call	testParam16
+	sw	a0,8(sp)
+	lw	t0,8(sp)
+	mv	t2,t0
+	la	t3,a0_0
+	sw	t2,0(t3)
+	la	a0,a0_0
+	lw	a0,0(a0)
+	call	putint
+	sw	a0,12(sp)
+	la	a0,a0_0
+	lw	a0,0(a0)
+	la	a1,a1_0
+	lw	a1,0(a1)
+	la	a2,a2_0
+	lw	a2,0(a2)
+	la	a3,a3_0
+	lw	a3,0(a3)
+	la	a4,a4_0
+	lw	a4,0(a4)
+	la	a5,a5_0
+	lw	a5,0(a5)
+	la	a6,a6_0
+	lw	a6,0(a6)
+	la	a7,a7_0
+	lw	a7,0(a7)
+	la	zero,a8_0
+	lw	zero,0(zero)
+	la	zero,a9_0
+	lw	zero,0(zero)
+	la	zero,a10_0
+	lw	zero,0(zero)
+	la	zero,a11_0
+	lw	zero,0(zero)
+	la	zero,a12_0
+	lw	zero,0(zero)
+	la	zero,a13_0
+	lw	zero,0(zero)
+	la	zero,a14_0
+	lw	zero,0(zero)
+	la	zero,a15_0
+	lw	zero,0(zero)
+	la	zero,a16_0
+	lw	zero,0(zero)
+	la	zero,a17_0
+	lw	zero,0(zero)
+	la	zero,a18_0
+	lw	zero,0(zero)
+	la	zero,a19_0
+	lw	zero,0(zero)
+	la	zero,a20_0
+	lw	zero,0(zero)
+	la	zero,a21_0
+	lw	zero,0(zero)
+	la	zero,a22_0
+	lw	zero,0(zero)
+	la	zero,a23_0
+	lw	zero,0(zero)
+	la	zero,a24_0
+	lw	zero,0(zero)
+	la	zero,a25_0
+	lw	zero,0(zero)
+	la	zero,a26_0
+	lw	zero,0(zero)
+	la	zero,a27_0
+	lw	zero,0(zero)
+	la	zero,a28_0
+	lw	zero,0(zero)
+	la	zero,a29_0
+	lw	zero,0(zero)
+	la	zero,a30_0
+	lw	zero,0(zero)
+	la	zero,a31_0
+	lw	zero,0(zero)
+	call	testParam32
+	sw	a0,16(sp)
+	lw	t0,16(sp)
+	mv	t2,t0
+	la	t3,a0_0
+	sw	t2,0(t3)
+	la	a0,a0_0
+	lw	a0,0(a0)
+	call	putint
+	sw	a0,20(sp)
+	li	a0,0
+	lw	ra,24(sp)
+	addi	sp,sp,28
+	jr	ra
+	.size	main, .-main
+	.ident	"GCC: (GNU) 9.2.0"
+	.section	.note.GNU-stack,"",@progbits
